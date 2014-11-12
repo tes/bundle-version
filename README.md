@@ -9,7 +9,7 @@ app.use(buildVersion.middleware);
 
 ```
 
-# Expects that you have supplied a build number in a runtime configuration file (added to the service docker file by Jenkins).
+It also expects that you have supplied a build number in a runtime configuration file (added to the service docker file by Jenkins).
 
 {
  'build':102
