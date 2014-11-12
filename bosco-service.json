@@ -1,0 +1,16 @@
+{
+  "assets":{
+    "js":{
+      "js-top":[]
+    },
+    "css":{
+      "css-bottom":[]
+    }
+  },
+  "files":{
+    "files-top":{
+      "js":[],
+      "css":[]
+    }
+  }
+}
