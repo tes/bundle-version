@@ -1,27 +1,23 @@
 {
-  "name": "module-tsl-bundle-version",
+  "name": "bundle-version",
   "version": "0.1.0",
   "description": "Exposes middleware and plugin that responds with Compoxure header / build number.",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tes/module-tsl-bundle-version.git"
+    "url": "https://github.com/tes/bundle-version.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/*"
   },
-  "publishConfig": {
-    "registry": "http://npm.tescloud.com"
-  },
-  "license": "Private",
+  "license": "MIT",
   "dependencies": {
-    "module-tsl-config": "latest"
+    "lodash": "^2.4.1"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
     "jshint": "^2.5.5",
     "mocha": "^2.0.1",
-    "module-tsl-resources-build": "latest",
     "rewire": "^2.1.3"
   }
 }

@@ -4,24 +4,25 @@ var cwd = process.cwd();
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
-var config = require('module-tsl-config');
 var headers = getHeaders();
 var buildNumber = config.build;
 
-module.exports = {
-    middleware: function(req, res, next) {
-        if(!buildNumber) return next();
-        _.forEach(headers, function(header) {
-            res.setHeader(header, buildNumber);
-        });
-        next();
-    },
-    register: function (plugin, options, next) {
-        // TODO Plugin version
-        return next();
-    },
-    headers: headers,
-    buildNumber: buildNumber
+module.exports = function(buildNumber) {
+    return {
+        middleware: function(req, res, next) {
+            if(!buildNumber) return next();
+            _.forEach(headers, function(header) {
+                res.setHeader(header, buildNumber);
+            });
+            next();
+        },
+        register: function (plugin, options, next) {
+            // TODO Plugin version
+            return next();
+        },
+        headers: headers,
+        buildNumber: buildNumber
+    };
 };
 
 function getHeaders() {

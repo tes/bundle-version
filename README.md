@@ -2,12 +2,13 @@ Middleware and plugin that provides response headers that show the bundle versio
 
 # Usage (above your app routers)
 ```js
-var buildVersion = require('module-tsl-bundle-version');
+var buildNumber = config.get('build'); // Or whatever appropriate in your environment
+var buildVersion = require('bundle-version')(buildNumber);
 app.use(buildVersion.middleware);
 
 ```
 
-It also expects that you have supplied a build number in a runtime configuration file (added to the service docker file by Jenkins).
+Typically you would have a build number in a runtime configuration file (added to a service docker file by Jenkins for example as part of the build).
 
 {
  'build':102
