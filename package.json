@@ -1,11 +1,11 @@
 {
-  "name": "module-tsl-build-version",
+  "name": "module-tsl-bundle-version",
   "version": "0.1.0",
   "description": "Exposes middleware and plugin that responds with Compoxure header / build number.",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tes/module-tsl-build-version.git"
+    "url": "https://github.com/tes/module-tsl-bundle-version.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
