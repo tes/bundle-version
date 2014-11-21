@@ -18,6 +18,7 @@ module.exports = function(buildNumber) {
     var hapiPlugin = function (plugin, options, next) {
         plugin.ext('onPostHandler', function(request, next) {
             if(!buildNumber) return next();
+            if(!request.response.headers) return next() // lab tests dont set this by default
             _.forEach(headers, function(header) {
                 request.response.headers[header] = buildNumber
             });
