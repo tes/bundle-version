@@ -9,6 +9,12 @@ var packageJson = require('./package.json')
 
 module.exports = function(buildNumber) {
 
+    if (buildNumber === undefined) {
+        var manifestPath = path.join(cwd, 'manifest.json')
+        var manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath)) : {};
+        buildNumber = manifest.build
+    }
+
     var hapiPlugin = function (plugin, options, next) {
         plugin.ext('onPostHandler', function(request, next) {
             if(!buildNumber) return next();
