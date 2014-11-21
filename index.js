@@ -5,7 +5,6 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 var headers = getHeaders();
-var buildNumber = config.build;
 
 module.exports = function(buildNumber) {
     return {
@@ -38,7 +37,7 @@ function getHeaders() {
             bundles.push(_.keys(boscoService.files));
         }
         bundles = _.map(_.flatten(bundles), function(bundle) {
-            return "cx-static|" + bundle;
+            return "cx-bundle|" + bundle;
         });
         return bundles;
     } else {
