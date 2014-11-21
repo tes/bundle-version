@@ -1,6 +1,6 @@
 {
   "name": "bundle-version",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Exposes middleware and plugin that responds with Compoxure header / build number.",
   "main": "index.js",
   "repository": {
