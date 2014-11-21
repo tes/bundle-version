@@ -5,20 +5,33 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 var headers = getHeaders();
+var packageJson = require('./package.json')
 
 module.exports = function(buildNumber) {
-    return {
-        middleware: function(req, res, next) {
+
+    var hapiPlugin = function (plugin, options, next) {
+        plugin.ext('onPostHandler', function(request, next) {
             if(!buildNumber) return next();
             _.forEach(headers, function(header) {
-                res.setHeader(header, buildNumber);
+                request.response.headers[header] = buildNumber
             });
             next();
-        },
-        register: function (plugin, options, next) {
-            // TODO Plugin version
-            return next();
-        },
+        })
+        next()
+    }
+    hapiPlugin.attributes = _.pick(packageJson, 'name', 'version');
+
+    var middleware = function(req, res, next) {
+        if(!buildNumber) return next();
+        _.forEach(headers, function(header) {
+            res.setHeader(header, buildNumber);
+        });
+        next();
+    }
+
+    return {
+        middleware: middleware,
+        register: hapiPlugin,
         headers: headers,
         buildNumber: buildNumber
     };
