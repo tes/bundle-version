@@ -51,9 +51,7 @@ describe('Aggregate version header from bosco-service.json and environment', fun
         }
       };
       var req = {
-        headers:{
-          'x-cdn-url':'http://cdn.base.url/'
-        },
+        headers:{},
         app:app
       };
       var res = {
@@ -63,7 +61,7 @@ describe('Aggregate version header from bosco-service.json and environment', fun
         headers: {}
       };
       bv.middleware(req, res, function() {
-        expect(app.config.cdnUrl).to.be('http://cdn.base.url/assets/default/');
+        expect(app.config.cdnUrl).to.be('assets/default/');
         expect(res.headers['cx-bundle|js-top']).to.be('default');
         done();
       });
