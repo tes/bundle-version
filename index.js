@@ -15,6 +15,9 @@ var boscoServiceFile = path.join(cwd,'bosco-service.json'),
 
 if(fs.existsSync(boscoServiceFile)) {
     var boscoService = require(boscoServiceFile);
+    if(boscoService.service && boscoService.service.name) {
+        boscoData.name = boscoService.service.name;
+    }
     if(boscoService.assets) {
         boscoData.headers.push(_.keys(boscoService.assets.js));
         boscoData.headers.push(_.keys(boscoService.assets.css));
@@ -23,11 +26,8 @@ if(fs.existsSync(boscoServiceFile)) {
         boscoData.headers.push(_.keys(boscoService.files));
     }
     boscoData.headers = _.map(_.flatten(boscoData.headers), function(bundle) {
-        return 'x-bundle|' + bundle;
+        return 'x-bundle|' + boscoData.name + '|' + bundle;
     });
-    if(boscoService.service && boscoService.service.name) {
-        boscoData.name = boscoService.service.name;
-    }
 }
 
 module.exports = function(buildNumber, cdnUrl) {
@@ -54,7 +54,6 @@ module.exports = function(buildNumber, cdnUrl) {
             _.forEach(boscoData.headers, function(header) {
                 request.response.headers[header] = buildNumber;
             });
-            request.response.headers['x-service|name'] = boscoData.name;
             request.pre.cdnUrl = createCdnUrl(request);
             next();
         })
@@ -67,7 +66,6 @@ module.exports = function(buildNumber, cdnUrl) {
         _.forEach(boscoData.headers, function(header) {
             res.setHeader(header, buildNumber);
         });
-        res.setHeader('x-service|name', boscoData.name);
         req.app.set('cdnUrl', createCdnUrl(req));
         next();
     }
