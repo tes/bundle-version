@@ -33,9 +33,9 @@ module.exports = function(buildNumber, assetBase) {
     if (buildNumber === undefined) {
         var manifestPath = path.join(cwd, 'manifest.json')
         var manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath)) : {};
-        buildNumber = manifest.build
+        buildNumber = manifest.build || 'default';
     }
-    if (!assetBase) { assetBase = 'assets'; }
+    assetBase = assetBase || 'assets';
 
     /*
      Craft a cdnUrl based on the bosco asset pipeline.

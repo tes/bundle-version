@@ -38,4 +38,28 @@ describe('Aggregate version header from bosco-service.json and environment', fun
 
     });
 
+    it('should use sensible defaults', function (done) {
+      var bv = require('..')();
+      var app = {
+        config: {},
+        set: function(key, value) {
+          this.config[key] = value;
+        }
+      };
+      var req = {
+        headers:{
+          'x-cdn-url':'http://cdn.base.url/'
+        },
+        app:app
+      };
+      var res = {
+        setHeader: function() {}
+      };
+      bv.middleware(req, res, function() {
+        expect(app.config.cdnUrl).to.be('http://cdn.base.url/assets/default/');
+        done();
+      });
+
+    });
+
 });
