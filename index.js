@@ -54,7 +54,7 @@ module.exports = function(buildNumber, cdnUrl) {
             _.forEach(boscoData.headers, function(header) {
                 request.response.headers[header] = buildNumber;
             });
-            request.response.headers['x-service'] = boscoData.name;
+            request.response.headers['x-service|name'] = boscoData.name;
             request.pre.cdnUrl = createCdnUrl(request);
             next();
         })
@@ -67,7 +67,7 @@ module.exports = function(buildNumber, cdnUrl) {
         _.forEach(boscoData.headers, function(header) {
             res.setHeader(header, buildNumber);
         });
-        res.setHeader('x-service', boscoData.name);
+        res.setHeader('x-service|name', boscoData.name);
         req.app.set('cdnUrl', createCdnUrl(req));
         next();
     }
