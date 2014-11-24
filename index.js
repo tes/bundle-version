@@ -3,25 +3,36 @@
 var cwd = process.cwd();
 var fs = require('fs');
 var path = require('path');
+var url = require('url');
 var _ = require('lodash');
 var headers = getHeaders();
 var packageJson = require('./package.json')
 
-module.exports = function(buildNumber) {
+module.exports = function(buildNumber, assetBase) {
 
     if (buildNumber === undefined) {
         var manifestPath = path.join(cwd, 'manifest.json')
         var manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath)) : {};
         buildNumber = manifest.build
     }
+    if (!assetBase) { assetBase = 'assets'; }
+
+    /*
+     Craft a cdnUrl based on the bosco asset pipeline.
+    */
+    var createCdnUrl = function(request) {
+        var baseCdnUrl = request.headers['x-cdn-url'];
+        return url.resolve(baseCdnUrl, assetBase + '/' + buildNumber + '/');
+    }
 
     var hapiPlugin = function (plugin, options, next) {
         plugin.ext('onPostHandler', function(request, next) {
-            if(!buildNumber) return next();
-            if(!request.response.headers) return next() // lab tests dont set this by default
+            if(!buildNumber) { return next(); }
+            if(!request.response.headers) { return next() } // lab tests dont set this by default
             _.forEach(headers, function(header) {
                 request.response.headers[header] = buildNumber
             });
+            request.pre.cdnUrl = createCdnUrl(request);
             next();
         })
         next()
@@ -29,10 +40,11 @@ module.exports = function(buildNumber) {
     hapiPlugin.attributes = _.pick(packageJson, 'name', 'version');
 
     var middleware = function(req, res, next) {
-        if(!buildNumber) return next();
+        if(!buildNumber) { return next(); }
         _.forEach(headers, function(header) {
             res.setHeader(header, buildNumber);
         });
+        req.app.set('cdnUrl', createCdnUrl(req));
         next();
     }
 
