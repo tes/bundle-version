@@ -29,10 +29,14 @@ describe('Aggregate version header from bosco-service.json and environment', fun
         app:app
       };
       var res = {
-        setHeader: function() {}
+        setHeader: function(header, value) {
+          this.headers[header] = value;
+        },
+        headers: {}
       };
       bv.middleware(req, res, function() {
         expect(app.config.cdnUrl).to.be('http://cdn.base.url/tes/102/');
+        expect(res.headers['cx-bundle|js-top']).to.be('102');
         done();
       });
 
@@ -53,10 +57,14 @@ describe('Aggregate version header from bosco-service.json and environment', fun
         app:app
       };
       var res = {
-        setHeader: function() {}
+        setHeader: function(header, value) {
+          this.headers[header] = value;
+        },
+        headers: {}
       };
       bv.middleware(req, res, function() {
         expect(app.config.cdnUrl).to.be('http://cdn.base.url/assets/default/');
+        expect(res.headers['cx-bundle|js-top']).to.be('default');
         done();
       });
 
