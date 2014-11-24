@@ -41,7 +41,7 @@ module.exports = function(buildNumber, assetBase) {
      Craft a cdnUrl based on the bosco asset pipeline.
     */
     var createCdnUrl = function(request) {
-        var baseCdnUrl = request.headers['x-cdn-url'];
+        var baseCdnUrl = request.headers['x-cdn-url'] || '';
         return url.resolve(baseCdnUrl, assetBase + '/' + buildNumber + '/');
     }
 
