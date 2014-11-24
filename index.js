@@ -5,53 +5,56 @@ var fs = require('fs');
 var path = require('path');
 var url = require('url');
 var _ = require('lodash');
-var packageJson = require('./package.json')
+var packageJson = require('./package.json');
 
-function getHeaders() {
-    var boscoServiceFile = path.join(cwd,'bosco-service.json');
-    if(fs.existsSync(boscoServiceFile)) {
-        var boscoService = require(boscoServiceFile), bundles = [];
-        if(boscoService.assets) {
-            bundles.push(_.keys(boscoService.assets.js));
-            bundles.push(_.keys(boscoService.assets.css));
-        }
-        if(boscoService.files) {
-            bundles.push(_.keys(boscoService.files));
-        }
-        bundles = _.map(_.flatten(bundles), function(bundle) {
-            return 'cx-bundle|' + bundle;
-        });
-        return bundles;
-    } else {
-        return [];
+/**
+ * Extract all the data from the bosco-service file
+ */
+var boscoServiceFile = path.join(cwd,'bosco-service.json'),
+    boscoData = {headers:[], name: packageJson.name || 'unknown'};
+
+if(fs.existsSync(boscoServiceFile)) {
+    var boscoService = require(boscoServiceFile);
+    if(boscoService.assets) {
+        boscoData.headers.push(_.keys(boscoService.assets.js));
+        boscoData.headers.push(_.keys(boscoService.assets.css));
+    }
+    if(boscoService.files) {
+        boscoData.headers.push(_.keys(boscoService.files));
+    }
+    boscoData.headers = _.map(_.flatten(boscoData.headers), function(bundle) {
+        return 'x-bundle|' + bundle;
+    });
+    if(boscoService.service && boscoService.service.name) {
+        boscoData.name = boscoService.service.name;
     }
 }
-var headers = getHeaders();
 
-module.exports = function(buildNumber, assetBase) {
+module.exports = function(buildNumber, cdnUrl) {
 
     if (buildNumber === undefined) {
         var manifestPath = path.join(cwd, 'manifest.json')
         var manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath)) : {};
         buildNumber = manifest.build || 'default';
     }
-    assetBase = assetBase || 'assets';
+    cdnUrl = cdnUrl || '';
 
     /*
      Craft a cdnUrl based on the bosco asset pipeline.
     */
     var createCdnUrl = function(request) {
-        var baseCdnUrl = request.headers['x-cdn-url'] || '';
-        return url.resolve(baseCdnUrl, assetBase + '/' + buildNumber + '/');
+        var baseCdnUrl = request.headers['x-cdn-url'] || cdnUrl || '';
+        return url.resolve(url.resolve(baseCdnUrl, boscoData.name + '/'), buildNumber  + '/');
     }
 
     var hapiPlugin = function (plugin, options, next) {
         plugin.ext('onPostHandler', function(request, next) {
             if(!buildNumber) { return next(); }
             if(!request.response.headers) { return next() } // lab tests dont set this by default
-            _.forEach(headers, function(header) {
-                request.response.headers[header] = buildNumber
+            _.forEach(boscoData.headers, function(header) {
+                request.response.headers[header] = buildNumber;
             });
+            request.response.headers['x-service'] = boscoData.name;
             request.pre.cdnUrl = createCdnUrl(request);
             next();
         })
@@ -61,9 +64,10 @@ module.exports = function(buildNumber, assetBase) {
 
     var middleware = function(req, res, next) {
         if(!buildNumber) { return next(); }
-        _.forEach(headers, function(header) {
+        _.forEach(boscoData.headers, function(header) {
             res.setHeader(header, buildNumber);
         });
+        res.setHeader('x-service', boscoData.name);
         req.app.set('cdnUrl', createCdnUrl(req));
         next();
     }
@@ -71,7 +75,8 @@ module.exports = function(buildNumber, assetBase) {
     return {
         middleware: middleware,
         register: hapiPlugin,
-        headers: headers,
+        headers: boscoData.headers,
+        name: boscoData.name,
         buildNumber: buildNumber
     };
 };

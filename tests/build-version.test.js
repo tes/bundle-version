@@ -8,9 +8,9 @@ describe('Aggregate version header from bosco-service.json and environment', fun
 
     it('should read headers from a bosco-service.json file', function (done) {
       var bv = require('..')('102','tes');
-      expect(bv.headers).to.contain('cx-bundle|js-top');
-      expect(bv.headers).to.contain('cx-bundle|css-bottom');
-      expect(bv.headers).to.contain('cx-bundle|files-top');
+      expect(bv.headers).to.contain('x-bundle|js-top');
+      expect(bv.headers).to.contain('x-bundle|css-bottom');
+      expect(bv.headers).to.contain('x-bundle|files-top');
       done();
     });
 
@@ -35,8 +35,9 @@ describe('Aggregate version header from bosco-service.json and environment', fun
         headers: {}
       };
       bv.middleware(req, res, function() {
-        expect(app.config.cdnUrl).to.be('http://cdn.base.url/tes/102/');
-        expect(res.headers['cx-bundle|js-top']).to.be('102');
+        expect(app.config.cdnUrl).to.be('http://cdn.base.url/bundle-version/102/');
+        expect(res.headers['x-bundle|js-top']).to.be('102');
+        expect(res.headers['x-service']).to.be('bundle-version');
         done();
       });
 
@@ -61,8 +62,8 @@ describe('Aggregate version header from bosco-service.json and environment', fun
         headers: {}
       };
       bv.middleware(req, res, function() {
-        expect(app.config.cdnUrl).to.be('assets/default/');
-        expect(res.headers['cx-bundle|js-top']).to.be('default');
+        expect(app.config.cdnUrl).to.be('bundle-version/default/');
+        expect(res.headers['x-bundle|js-top']).to.be('default');
         done();
       });
 

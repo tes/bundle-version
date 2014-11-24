@@ -3,7 +3,7 @@ Middleware and plugin that provides response headers that show the bundle versio
 # Usage (above your app routers)
 ```js
 var buildNumber = config.get('build'); // Or whatever appropriate in your environment
-var buildVersion = require('bundle-version')(buildNumber, assetBase);
+var buildVersion = require('bundle-version')(buildNumber, cdnUrl);
 app.use(buildVersion.middleware);
 
 ```
@@ -19,10 +19,10 @@ Typically you would have a build number in a runtime configuration file (added t
 The assetBase name can be anything you like, it defaults to 'assets', but if you use Bosco as part of your static asset pipeline will form part of the URL generation for the CDN:
 
 ```
-{{cdnBaseUrl}}/{{assetBase}}/{{buildVersion}}/
+{{header['x-cdn-url'] || cdnUrl }}/{{serviceName}}/{{buildVersion}}/
 ```
 
-In the above example, the cdnBaseUrl is provided to the service via a 'x-cdn-url' header.  If you do not use this header you can pass the entire cdnUrl through as the assetBase property (no trailing slash).
+In the above example, the cdnBaseUrl is provided to the service via a 'x-cdn-url' header.  If you do not use this header you can pass the entire cdnUrl through as the cdnUrl property when creating the middleware (no trailing slash).
 
 ## Accessing the CDN Url
 

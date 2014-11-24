@@ -1,4 +1,7 @@
 {
+  "service":{
+    "name":"bundle-version"
+  },
   "assets":{
     "js":{
       "js-top":[]
