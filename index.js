@@ -5,8 +5,28 @@ var fs = require('fs');
 var path = require('path');
 var url = require('url');
 var _ = require('lodash');
-var headers = getHeaders();
 var packageJson = require('./package.json')
+
+function getHeaders() {
+    var boscoServiceFile = path.join(cwd,'bosco-service.json');
+    if(fs.existsSync(boscoServiceFile)) {
+        var boscoService = require(boscoServiceFile), bundles = [];
+        if(boscoService.assets) {
+            bundles.push(_.keys(boscoService.assets.js));
+            bundles.push(_.keys(boscoService.assets.css));
+        }
+        if(boscoService.files) {
+            bundles.push(_.keys(boscoService.files));
+        }
+        bundles = _.map(_.flatten(bundles), function(bundle) {
+            return 'cx-bundle|' + bundle;
+        });
+        return bundles;
+    } else {
+        return [];
+    }
+}
+var headers = getHeaders();
 
 module.exports = function(buildNumber, assetBase) {
 
@@ -55,26 +75,4 @@ module.exports = function(buildNumber, assetBase) {
         buildNumber: buildNumber
     };
 };
-
-function getHeaders() {
-
-    var boscoServiceFile = path.join(cwd,'bosco-service.json');
-    if(fs.existsSync(boscoServiceFile)) {
-        var boscoService = require(boscoServiceFile), bundles = [];
-        if(boscoService.assets) {
-            bundles.push(_.keys(boscoService.assets.js));
-            bundles.push(_.keys(boscoService.assets.css));
-        }
-        if(boscoService.files) {
-            bundles.push(_.keys(boscoService.files));
-        }
-        bundles = _.map(_.flatten(bundles), function(bundle) {
-            return "cx-bundle|" + bundle;
-        });
-        return bundles;
-    } else {
-        return [];
-    }
-
-}
 

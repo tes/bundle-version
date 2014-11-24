@@ -8,8 +8,13 @@
     "url": "https://github.com/tes/bundle-version.git"
   },
   "scripts": {
-    "test": "mocha tests/*"
+    "test": "mocha tests/*",
+    "lint": "jshint ."
   },
+  "precommit": [
+    "lint",
+    "test"
+  ],
   "license": "MIT",
   "dependencies": {
     "lodash": "^2.4.1"
@@ -18,6 +23,7 @@
     "expect.js": "^0.3.1",
     "jshint": "^2.5.5",
     "mocha": "^2.0.1",
+    "precommit-hook": "^1.0.7",
     "rewire": "^2.1.3"
   }
 }
