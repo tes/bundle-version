@@ -10,21 +10,23 @@ app.use(buildVersion.middleware);
 
 Typically you would have a build number in a runtime configuration file (added to a service docker file by Jenkins for example as part of the build).
 
+```
 {
  'build':102
 }
+```
 
-The assetBase name can be anything you like, but if you use Bosco as part of your static asset pipeline will form part of the URL generation for the CDN:
+The assetBase name can be anything you like, it defaults to 'assets', but if you use Bosco as part of your static asset pipeline will form part of the URL generation for the CDN:
 
 ```
 {{cdnBaseUrl}}/{{assetBase}}/{{buildVersion}}/
 ```
 
-Where the cdnBaseUrl is provided to the service via a 'x-cdn-url' header.
+In the above example, the cdnBaseUrl is provided to the service via a 'x-cdn-url' header.  If you do not use this header you can pass the entire cdnUrl through as the assetBase property (no trailing slash).
 
 ## Accessing the CDN Url
 
-If you use a combination of Bosco + Compoxure (or either), the middleware also sets a CDN Url property for you that ensures that any references to images or other items works correctly based on the service build number.
+If you use a combination of Bosco + Compoxure (or either), this middleware also sets a CDN Url property for you that ensures that any references to images or other items works correctly based on the service build number.
 
 ### Express
 
