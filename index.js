@@ -26,7 +26,7 @@ if(fs.existsSync(boscoServiceFile)) {
         boscoData.headers.push(_.keys(boscoService.files));
     }
     boscoData.headers = _.map(_.flatten(boscoData.headers), function(bundle) {
-        return 'x-bundle|' + boscoData.name + '|' + bundle;
+        return 'x-static|' + boscoData.name + '|' + bundle;
     });
 }
 
