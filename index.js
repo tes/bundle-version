@@ -35,7 +35,7 @@ module.exports = function(buildNumber, cdnUrl) {
     if (buildNumber === undefined) {
         var manifestPath = path.join(cwd, 'manifest.json')
         var manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath)) : {};
-        buildNumber = manifest.build || 'default';
+        buildNumber = manifest.build || 'local';
     }
     cdnUrl = cdnUrl || '';
 

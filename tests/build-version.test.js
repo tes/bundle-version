@@ -61,8 +61,8 @@ describe('Aggregate version header from bosco-service.json and environment', fun
         headers: {}
       };
       bv.middleware(req, res, function() {
-        expect(app.config.cdnUrl).to.be('bundle-version/default/');
-        expect(res.headers['x-static|bundle-version|js-top']).to.be('default');
+        expect(app.config.cdnUrl).to.be('bundle-version/local/');
+        expect(res.headers['x-static|bundle-version|js-top']).to.be('local');
         done();
       });
 
