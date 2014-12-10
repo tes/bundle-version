@@ -66,7 +66,7 @@ module.exports = function(buildNumber, cdnUrl) {
         _.forEach(boscoData.headers, function(header) {
             res.setHeader(header, buildNumber);
         });
-        req.app.set('cdnUrl', createCdnUrl(req));
+        req.headers['x-cdn-url'] = createCdnUrl(req);
         next();
     }
 
