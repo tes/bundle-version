@@ -8,6 +8,7 @@ describe('Aggregate version header from bosco-service.json and environment', fun
 
     it('should read headers from a bosco-service.json file', function (done) {
       var bv = require('..')('102','cdn');
+      expect(bv.headers).to.contain('x-static|bundle-version');
       expect(bv.headers).to.contain('x-static|bundle-version|js-top');
       expect(bv.headers).to.contain('x-static|bundle-version|css-bottom');
       expect(bv.headers).to.contain('x-static|bundle-version|files-top');

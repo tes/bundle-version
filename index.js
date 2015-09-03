@@ -28,6 +28,7 @@ if(fs.existsSync(boscoServiceFile)) {
     boscoData.headers = _.map(_.flatten(boscoData.headers), function(bundle) {
         return 'x-static|' + boscoData.name + '|' + bundle;
     });
+    boscoData.headers.push('x-static|' + boscoData.name);
 }
 
 module.exports = function(buildNumber, cdnUrl) {
