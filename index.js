@@ -1,11 +1,19 @@
 'use strict';
 
-var cwd = process.cwd();
 var fs = require('fs');
 var path = require('path');
 var url = require('url');
 var _ = require('lodash');
 var packageJson = require('./package.json');
+
+var cwd;
+var pm2Exec = process.env.pm_exec_path;
+if (pm2Exec) {
+  // If exec path is a file, get the directory of that file
+  cwd = Boolean(path.extname(pm2Exec)) ? path.dirname(pm2Exec) : pm2Exec;
+} else {
+  cwd = process.cwd();
+}
 
 /**
  * Extract all the data from the bosco-service file
