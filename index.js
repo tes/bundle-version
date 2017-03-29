@@ -26,16 +26,6 @@ if(fs.existsSync(boscoServiceFile)) {
     if(boscoService.service && boscoService.service.name) {
         boscoData.name = boscoService.service.name;
     }
-    if(boscoService.assets) {
-        boscoData.headers.push(_.keys(boscoService.assets.js));
-        boscoData.headers.push(_.keys(boscoService.assets.css));
-    }
-    if(boscoService.files) {
-        boscoData.headers.push(_.keys(boscoService.files));
-    }
-    boscoData.headers = _.map(_.flatten(boscoData.headers), function(bundle) {
-        return 'x-static|' + boscoData.name + '|' + bundle;
-    });
     boscoData.headers.push('x-static|' + boscoData.name);
 }
 
